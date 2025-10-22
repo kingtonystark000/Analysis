@@ -1,0 +1,44 @@
+import pandas as pd
+
+df = pd.read_csv('TA2.csv')
+
+macd_data = df['MACD_signal']
+rsi_data = df['RSI_signal']
+time_data = df['date']
+close_data = df['close']
+
+ratio = []
+count = 0
+
+def show(name, i, lst, price):
+    print("RSI buy at", time_data[i])
+    print(lst)
+    print("BUY: ",close_data[i])
+    print("MAX: ",max(price))
+    print(close_data[i] < max(price))
+    print(price)
+    print("PROFIT: ",max(price)-close_data[i])
+    ratio.append("Profit") if max(price) > close_data[i] else ratio.append("Loss")
+    print("\n")
+  
+def rsi(i):
+  lst = list(macd_data[i-10:i])
+  price = list(close_data[i+1:i+11])
+  if "buy macd" in lst:
+    show("RSI", i, lst, price)
+
+def macd(i):
+  lst = list(rsi_data[i-10:i])
+  price = list(close_data[i+1:i+11 ])
+  if "buy" in lst:
+    show("MACD", i, lst, price)
+
+for index in range(len(df)):
+  if rsi_data[index] == "buy":
+    rsi(index)
+  if macd_data[index] == "buy macd":
+    macd(index)
+
+print("Total Signals Processed: ", count)
+print("Profitable Signals: ", ratio.count("Profit"))
+print("Losing Signals: ", ratio.count("Loss"))
