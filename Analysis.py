@@ -8,6 +8,7 @@ macd_data = df['MACD_signal']
 rsi_data = df['RSI_signal']
 time_data = df['date']
 close_data = df['close']
+low_data = df['Low']
 
 ratio = []
 # count = 0
@@ -15,23 +16,23 @@ ratio = []
 def show(name, i, lst, price):
     print(f"{name} buy at", time_data[i])
     print(lst)
-    print("BUY: ",close_data[i])
+    print("BUY: ",low_data[i])
     print("MAX: ",max(price))
-    print(close_data[i] < max(price))
+    print(low_data[i] < max(price))
     print(price)
-    print("PROFIT: ",max(price)-close_data[i])
-    ratio.append("Profit") if max(price) > close_data[i] else ratio.append("Loss")
+    print("PROFIT: ",max(price)-low_data[i])
+    ratio.append("Profit" if low_data[i] < max(price) else "Loss")
     print("\n")
   
 def rsi(i):
   lst = list(macd_data[i-10:i])
-  price = list(close_data[i+1:i+11])
+  price = list(low_data[i+1:i+11])
   if "buy macd" in lst:
     show("RSI", i, lst, price)
 
 def macd(i):
   lst = list(rsi_data[i-10:i])
-  price = list(close_data[i+1:i+11 ])
+  price = list(low_data[i+1:i+11 ])
   if "buy" in lst:
     show("MACD", i, lst, price)
 
